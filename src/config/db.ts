@@ -1,7 +1,7 @@
 import { Pool } from "pg";
 import config from ".";
 
-const pool = new Pool({
+export const pool = new Pool({
   connectionString: config.connection_str,
 });
 
@@ -13,7 +13,7 @@ const initDB = async () => {
       email VARCHAR(100) UNIQUE NOT NULL,
       password TEXT NOT NULL,
       phone VARCHAR(255) NOT NULL,
-      role VARCHAR(255) NOT NULL CHECK (role IN ('admin', 'user'))
+      role VARCHAR(255) NOT NULL CHECK (role IN ('admin', 'customer'))
     );
   `);
 
