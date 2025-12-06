@@ -2,10 +2,18 @@ import { NextFunction, Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import config from "../config";
 
+// Extend Request interface
+declare module "express-serve-static-core" {
+  interface Request {
+    user?: JwtPayload;
+  }
+}
+
 const auth = (...roles: string[]) => {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const bearerToken = req.headers.authorization;
+
       if (!bearerToken || !bearerToken.startsWith("Bearer ")) {
         return res.status(401).json({
           success: false,

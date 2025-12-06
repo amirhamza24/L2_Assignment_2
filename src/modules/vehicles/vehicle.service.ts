@@ -13,7 +13,7 @@ const createVehicle = async (payload: Record<string, unknown>) => {
     `INSERT INTO vehicles(vehicle_name, type, registration_number, daily_rent_price, availability_status) VALUES($1, $2, $3, $4, $5) RETURNING *`,
     [
       vehicle_name,
-      type,
+      (type as string).toLowerCase(),
       registration_number,
       daily_rent_price,
       availability_status,
@@ -46,7 +46,7 @@ const updateVehicle = async (
     `UPDATE vehicles SET vehicle_name = $1, type = $2, registration_number = $3, daily_rent_price = $4, availability_status = $5 WHERE id = $6 RETURNING *`,
     [
       vehicle_name,
-      type,
+      type.toLowerCase(),
       registration_number,
       daily_rent_price,
       availability_status,
