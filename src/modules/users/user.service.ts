@@ -16,7 +16,46 @@ const getSingleUser = async (id: string) => {
   return result;
 };
 
+const updateUser = async (
+  name: string,
+  email: string,
+  role: string,
+  phone: string,
+  id: string
+) => {
+  // if (role) {
+  //   const result = await pool.query(
+  //     `UPDATE users SET name = $1, email = $2, phone = $3, role = $4 WHERE id = $5 RETURNING *`,
+  //     [name, email, phone, role, id]
+  //   );
+
+  //   return result;
+  // } else {
+  //   const result = await pool.query(
+  //     `UPDATE users SET name = $1, email = $2, phone = $3 WHERE id = $4 RETURNING *`,
+  //     [name, email, phone, id]
+  //   );
+
+  //   return result;
+  // }
+
+  const result = await pool.query(
+    `UPDATE users SET name = $1, email = $2, role = $3, phone = $4 WHERE id = $5 RETURNING *`,
+    [name, email, role, phone, id]
+  );
+
+  return result;
+};
+
+const deleteUser = async (id: string) => {
+  const result = await pool.query(`DELETE FROM users WHERE id = $1`, [id]);
+
+  return result;
+};
+
 export const userServices = {
   getAllUsers,
   getSingleUser,
+  updateUser,
+  deleteUser,
 };
