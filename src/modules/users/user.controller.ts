@@ -21,7 +21,9 @@ const getAllUsers = async (req: Request, res: Response) => {
 
 const getSingleUser = async (req: Request, res: Response) => {
   try {
-    const result = await userServices.getSingleUser(req.params.id as string);
+    const result = await userServices.getSingleUser(
+      req.params.userId as string
+    );
 
     if (result.rows.length === 0) {
       return res.status(404).json({
@@ -46,35 +48,38 @@ const getSingleUser = async (req: Request, res: Response) => {
 const updateUser = async (req: Request, res: Response) => {
   console.log(req.user);
 
-  // if (!req.user) {
-  //   return res.status(401).json({
-  //     success: false,
-  //     message: "Unauthorized!",
-  //   });
-  // }
+  if (!req.user) {
+    return res.status(401).json({
+      success: false,
+      message: "Unauthorized!",
+    });
+  }
   try {
     const { name, email, phone, role } = req.body;
     const loggedInUser = req.user;
-    const id = req.params.id;
+    const userId = req.params.userId;
 
-    // if (loggedInUser.role !== "admin" && loggedInUser.id.toString() !== id) {
-    //   return res.status(401).json({
-    //     success: false,
-    //     message: "Unauthorized!",
-    //   });
-    // }
+    if (
+      loggedInUser.role === "customer" &&
+      loggedInUser.id.toString() != userId
+    ) {
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized!",
+      });
+    }
 
-    // let newRole = undefined;
-    // if (loggedInUser.role === "admin") {
-    //   newRole = role;
-    // }
+    let newRole = undefined;
+    if (loggedInUser.role === "admin") {
+      newRole = role;
+    }
 
     const result = await userServices.updateUser(
       name,
       email,
-      role,
+      newRole,
       phone,
-      id as string
+      userId as string
     );
 
     if (result.rows.length === 0) {
@@ -106,7 +111,7 @@ const updateUser = async (req: Request, res: Response) => {
 
 const deleteUser = async (req: Request, res: Response) => {
   try {
-    const result = await userServices.deleteUser(req.params.id as string);
+    const result = await userServices.deleteUser(req.params.userId as string);
 
     if (result.rowCount === 0) {
       return res.status(404).json({

@@ -1,6 +1,8 @@
 import config from "./config";
 import app from "./app";
 
+import "./jobs/autoReturnBooking";
+
 const port = config.port;
 
 app.listen(port, () => {

@@ -28,6 +28,4 @@ app.use("/api/v1/bookings", bookingRoutes);
 //* auth CRUD
 app.use("/api/v1/auth", authRoutes);
 
-//
-
 export default app;

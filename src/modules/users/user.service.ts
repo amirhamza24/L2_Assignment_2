@@ -21,30 +21,30 @@ const updateUser = async (
   email: string,
   role: string,
   phone: string,
-  id: string
+  userId: string
 ) => {
-  // if (role) {
-  //   const result = await pool.query(
-  //     `UPDATE users SET name = $1, email = $2, phone = $3, role = $4 WHERE id = $5 RETURNING *`,
-  //     [name, email, phone, role, id]
-  //   );
+  if (role) {
+    const result = await pool.query(
+      `UPDATE users SET name = $1, email = $2, phone = $3, role = $4 WHERE id = $5 RETURNING *`,
+      [name, email, phone, role, userId]
+    );
 
-  //   return result;
-  // } else {
-  //   const result = await pool.query(
-  //     `UPDATE users SET name = $1, email = $2, phone = $3 WHERE id = $4 RETURNING *`,
-  //     [name, email, phone, id]
-  //   );
+    return result;
+  } else {
+    const result = await pool.query(
+      `UPDATE users SET name = $1, email = $2, phone = $3 WHERE id = $4 RETURNING *`,
+      [name, email, phone, userId]
+    );
 
-  //   return result;
-  // }
+    return result;
+  }
 
-  const result = await pool.query(
-    `UPDATE users SET name = $1, email = $2, role = $3, phone = $4 WHERE id = $5 RETURNING *`,
-    [name, email, role, phone, id]
-  );
+  // const result = await pool.query(
+  //   `UPDATE users SET name = $1, email = $2, role = $3, phone = $4 WHERE id = $5 RETURNING *`,
+  //   [name, email, role, phone, userId]
+  // );
 
-  return result;
+  // return result;
 };
 
 const deleteUser = async (id: string) => {

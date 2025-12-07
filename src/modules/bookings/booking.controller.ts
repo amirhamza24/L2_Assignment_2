@@ -66,7 +66,40 @@ const getAllBookings = async (req: Request, res: Response) => {
   }
 };
 
+const updateBooking = async (req: Request, res: Response) => {
+  try {
+    const loggedInUser = req.user!;
+    const userId = loggedInUser.id;
+    const role = loggedInUser.role;
+
+    const result = await bookingServices.updateBooking(
+      req.params.bookingId as string,
+      role
+    );
+
+    if (!result.success) {
+      return res.status(400).json({
+        success: false,
+        message: result.message,
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: result.message,
+      data: result.data,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+      errors: error,
+    });
+  }
+};
+
 export const bookingControllers = {
   createBooking,
   getAllBookings,
+  updateBooking,
 };

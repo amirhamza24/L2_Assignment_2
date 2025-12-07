@@ -13,7 +13,7 @@ const initDB = async () => {
       email VARCHAR(100) UNIQUE NOT NULL,
       password TEXT NOT NULL,
       phone VARCHAR(255) NOT NULL,
-      role VARCHAR(255) NOT NULL CHECK (role IN ('admin', 'customer'))
+      role VARCHAR(255) DEFAULT 'customer' CHECK (role IN ('admin', 'customer'))
     );
   `);
 
@@ -21,10 +21,10 @@ const initDB = async () => {
     CREATE TABLE IF NOT EXISTS vehicles (
       id SERIAL PRIMARY KEY,
       vehicle_name VARCHAR(150) NOT NULL,
-      type VARCHAR(20) NOT NULL CHECK (type IN ('car', 'bike', 'van', 'SUV')),
+      type VARCHAR(20) DEFAULT 'car' CHECK (type IN ('car', 'bike', 'van', 'SUV')),
       registration_number VARCHAR(150) UNIQUE NOT NULL,
       daily_rent_price INT NOT NULL CHECK (daily_rent_price > 0),
-      availability_status VARCHAR(50) NOT NULL CHECK (availability_status IN ('available', 'booked'))
+      availability_status VARCHAR(50) DEFAULT 'available' CHECK (availability_status IN ('available', 'booked'))
     );
   `);
 
@@ -36,7 +36,7 @@ const initDB = async () => {
       rent_start_date DATE NOT NULL,
       rent_end_date DATE NOT NULL,
       total_price INT NOT NULL CHECK (total_price > 0),
-      status VARCHAR(50) NOT NULL CHECK (status IN ('active', 'cancelled', 'returned')),
+      status VARCHAR(50) CHECK (status IN ('active', 'cancelled', 'returned')),
       CHECK (rent_end_date > rent_start_date)
     );
   `);

@@ -130,8 +130,75 @@ const getAllBookingsByCustomer = async (customerId: string) => {
   }));
 };
 
+const updateBooking = async (bookingId: string, role: string) => {
+  const bookingResult = await pool.query(
+    `SELECT * FROM bookings where id = $1`,
+    [bookingId]
+  );
+
+  if (bookingResult.rows.length === 0) {
+    return {
+      success: false,
+      message: "Booking not found!",
+    };
+  }
+
+  const booking = bookingResult.rows[0];
+  const vehicleId = booking.vehicle_id;
+
+  const nowDate = new Date();
+  const rentStartDate = new Date(booking.rent_start_date);
+  const rentEndDate = new Date(booking.rent_end_date);
+
+  if (role === "customer") {
+    if (nowDate >= rentStartDate) {
+      return {
+        success: false,
+        message: "You cannot cancel after rental start date!",
+      };
+    }
+
+    const updated = await pool.query(
+      `UPDATE bookings SET status = 'cancelled' WHERE id = $1 RETURNING *`,
+      [bookingId]
+    );
+
+    await pool.query(
+      `UPDATE vehicles SET availability_status = 'available' WHERE id = $1`,
+      [vehicleId]
+    );
+
+    return {
+      success: true,
+      message: "Booking cancelled successfully",
+      data: updated.rows[0],
+    };
+  }
+
+  if (role === "admin") {
+    const updated = await pool.query(
+      `UPDATE bookings SET status='returned' WHERE id=$1 RETURNING *`,
+      [bookingId]
+    );
+
+    await pool.query(
+      `UPDATE vehicles SET availability_status='available' WHERE id=$1`,
+      [vehicleId]
+    );
+
+    return {
+      success: true,
+      message: "Booking marked as returned. Vehicle is now available",
+      data: updated.rows[0],
+    };
+  }
+
+  return { success: false, message: "Unauthorized action!" };
+};
+
 export const bookingServices = {
   createBooking,
   getAllBookings,
   getAllBookingsByCustomer,
+  updateBooking,
 };
