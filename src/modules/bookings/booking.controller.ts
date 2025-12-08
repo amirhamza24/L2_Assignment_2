@@ -26,13 +26,13 @@ const createBooking = async (req: Request, res: Response) => {
   }
 };
 
-const getAllBookings = async (req: Request, res: Response) => {
+const getBookings = async (req: Request, res: Response) => {
   try {
     const loggedInUser = req.user!;
     const userId = loggedInUser.id;
     const role = loggedInUser.role;
-    console.log("Logged in user ID:", userId);
-    console.log("Role:", role);
+    // console.log("Logged in user ID:", userId);
+    // console.log("Role:", role);
 
     // const result = await bookingServices.getAllBookings();
 
@@ -100,6 +100,6 @@ const updateBooking = async (req: Request, res: Response) => {
 
 export const bookingControllers = {
   createBooking,
-  getAllBookings,
+  getBookings,
   updateBooking,
 };

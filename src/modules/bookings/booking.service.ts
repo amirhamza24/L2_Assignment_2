@@ -76,7 +76,6 @@ const getAllBookings = async () => {
     ORDER BY b.id DESC
   `);
 
-  // Map rows into nested objects
   const bookings = result.rows.map((row) => ({
     id: row.id,
     customer_id: row.customer_id,
@@ -154,7 +153,7 @@ const updateBooking = async (bookingId: string, role: string) => {
     if (nowDate >= rentStartDate) {
       return {
         success: false,
-        message: "You cannot cancel after rental start date!",
+        message: "You cannot cancel this booking that has already started!",
       };
     }
 
@@ -189,7 +188,12 @@ const updateBooking = async (bookingId: string, role: string) => {
     return {
       success: true,
       message: "Booking marked as returned. Vehicle is now available",
-      data: updated.rows[0],
+      data: {
+        ...updated.rows[0],
+        vehicle: {
+          availability_status: "available",
+        },
+      },
     };
   }
 

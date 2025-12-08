@@ -18,6 +18,7 @@ const createVehicle = async (payload: Record<string, unknown>) => {
   } = payload;
 
   const vehicleType = type || "car";
+  const vehicleAvailabilityStatus = availability_status || "available";
 
   const result = await pool.query(
     `INSERT INTO vehicles(vehicle_name, type, registration_number, daily_rent_price, availability_status) VALUES($1, $2, $3, $4, $5) RETURNING *`,
@@ -26,7 +27,7 @@ const createVehicle = async (payload: Record<string, unknown>) => {
       (vehicleType as string).toLowerCase(),
       registration_number,
       daily_rent_price,
-      availability_status,
+      vehicleAvailabilityStatus,
     ]
   );
   return result;

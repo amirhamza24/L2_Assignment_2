@@ -55,6 +55,7 @@ const getSingleVehicle = async (req: Request, res: Response) => {
       return res.status(404).json({
         success: false,
         message: "No vehicle found",
+        data: [],
       });
     }
     return res.status(200).json({

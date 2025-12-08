@@ -48,9 +48,30 @@ const updateUser = async (
 };
 
 const deleteUser = async (id: string) => {
-  const result = await pool.query(`DELETE FROM users WHERE id = $1`, [id]);
+  const activeBookingCheck = await pool.query(
+    `SELECT * FROM bookings 
+     WHERE customer_id = $1 AND status = 'active'`,
+    [id]
+  );
 
-  return result;
+  if (activeBookingCheck.rows.length > 0) {
+    return {
+      success: false,
+      message: "User cannot be deleted because it has active bookings!",
+      data: null,
+    };
+  }
+
+  const result = await pool.query(
+    `DELETE FROM users WHERE id = $1 RETURNING *`,
+    [id]
+  );
+
+  return {
+    success: true,
+    message: "User deleted successfully",
+    data: result,
+  };
 };
 
 export const userServices = {
