@@ -52,9 +52,7 @@ const signIn = async (email: string, password: string) => {
     { expiresIn: "7d" }
   );
 
-  const bearerToken = `Bearer ${token}`;
-
-  return { token: bearerToken, user };
+  return { token, user };
 };
 
 export const authServices = {
